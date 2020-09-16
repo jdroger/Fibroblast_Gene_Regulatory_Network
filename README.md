@@ -1,14 +1,14 @@
 # Fibroblast Gene Regulatory Network Inference
 
-Scripts infer networks of transcriptional regulation from gene expression data using the [GRNBoost2 algorithm](https://arboreto.readthedocs.io/en/latest/algorithms.html). Original networks are refined to match annotated transcription factor (TF)-target databases as well as genes related to cardiac fibrosis. Additional capabilities include k-fold cross validation and conversion to a database for dynamic simulation using [Netflux](https://github.com/saucermanlab/Netflux).
+Scripts infer networks of transcriptional regulation from gene expression data using the [GRNBoost2 algorithm](https://doi.org/10.1093/bioinformatics/bty916). Original networks are refined to match annotated transcription factor (TF)-target databases as well as genes related to cardiac fibrosis. Additional capabilities include k-fold cross validation and conversion to a database for dynamic simulation using [Netflux](https://github.com/saucermanlab/Netflux).
 
 ## Required dependencies
 
 - Python: 3.8 or later
 - Pandas: 1.0 or later
 - Numpy: 1.17 or later
-- Dask.distributed: 1.28 or later
-- [Arboreto package](https://arboreto.readthedocs.io/) containing GRNBoost2 algorithm: 0.1.15 or later
+- Dask distributed: 1.28 or later
+- [Arboreto](https://arboreto.readthedocs.io/) containing GRNBoost2 algorithm: 0.1.15 or later
 
 ## Data requirements
 
