@@ -6,6 +6,7 @@ Scripts for inferring GRNs, including:
 """
 
 import os
+# import time
 import pandas as pd
 import numpy as np
 import asyncio
@@ -13,8 +14,8 @@ import asyncio
 from distributed import Client, LocalCluster
 from arboreto.algo import grnboost2
 
-from GRNrefinement import refineGRN
-import GRNvalidation as gv
+from src.GRNrefinement import refineGRN
+import src.GRNvalidation as gv
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -33,7 +34,7 @@ def importTFs(dirpath, libraryname, both=True):
     adds a second library to create composite list for 
     wider coverage of TFs.
     """
-    from GRNrefinement import getLibPath
+    from src.GRNrefinement import getLibPath
     libextension = "_attribute_list_entries.txt.gz"
     libfile = getLibPath(dirpath, libraryname, filter_extension=libextension)
     tf_all = pd.read_table(libfile)
@@ -115,6 +116,7 @@ def inferGRN(filename,
     # setup Dask cluster
     client = Client(LocalCluster())
     print(client.dashboard_link)
+    
 
 
     # infer + refine GRN
@@ -128,7 +130,7 @@ def inferGRN(filename,
     if savedir is not None:
         saveGRN(grn_refined, savedir, suffix=suffix)
 
-
+    client.shutdown()
     return grn_refined
 
 
@@ -188,5 +190,5 @@ def crossvalidateGRN(filename,
 
         fold = fold + 1
 
-
+    client.shutdown()
     return grn_all
