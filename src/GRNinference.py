@@ -183,6 +183,7 @@ def crossvalidateGRN(filename,
                     trainingset=training, testingset=testing)
         
         # store all refined GRNs
+        grn_refined["fold"] = fold
         if fold == 0:
             grn_all = grn_refined
         else:
