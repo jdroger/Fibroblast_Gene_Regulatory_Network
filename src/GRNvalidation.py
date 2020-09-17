@@ -15,12 +15,13 @@ def makeFolds(data, k):
     random.shuffle(order)
     # split into folds (specified by k)
     folds = []
-    fold=0
+    fold = 0
+    dist = len(order) / k
     while fold < k:
-        start = fold*k
-        end = (fold*k)+4
+        start = int(round(fold * dist))
+        end = int(round(start + dist))
         folds.append(order[start:end])
-        fold = fold+1
+        fold = fold + 1
     return folds
 
 def assignFolds(folds):
