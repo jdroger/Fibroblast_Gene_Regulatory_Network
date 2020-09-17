@@ -1,0 +1,18 @@
+_Training_
+Post-TAVR G
+Post-TAVR C
+Post-TAVR D
+Post-TAVR B
+Pre-TAVR F
+Post-TAVR F
+Pre-TAVR A
+Pre-TAVR G
+Post-TAVR E
+Pre-TAVR C
+Pre-TAVR B
+Pre-TAVR D
+Post-TAVR H
+Post-TAVR A
+_Testing_
+Pre-TAVR E
+Pre-TAVR H
