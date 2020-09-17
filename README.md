@@ -8,11 +8,12 @@ Scripts infer networks of transcriptional regulation from gene expression data u
 - Pandas: 1.0 or later
 - Numpy: 1.17 or later
 - Dask distributed: 1.28 or later
+- Openpyxl (for export of networks to Excel): 3.0.5 or later
 - [Arboreto](https://arboreto.readthedocs.io/) containing GRNBoost2 algorithm: 0.1.15 or later
 
 ## Data requirements
 
 - Gene expression data: CSV file containing genes (rows) x samples (columns)
-  - Currently utilizes CPM data [Aguado et. al. 2019](https://pubmed.ncbi.nlm.nih.gov/31511425/) (data obtained from [GSE133529](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE133529))
+  - Currently utilizes CPM data from [Aguado et. al. 2019](https://pubmed.ncbi.nlm.nih.gov/31511425/) (data obtained from [GSE133529](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE133529))
 - Library data: TXT files of annotated TF-target databases as obtained via [Harmonizome](https://maayanlab.cloud/Harmonizome/download)
   - Supported databases: [CHEA](https://maayanlab.cloud/Harmonizome/dataset/CHEA+Transcription+Factor+Targets), [TRANSFAC-predicted](https://maayanlab.cloud/Harmonizome/dataset/TRANSFAC+Predicted+Transcription+Factor+Targets), [TRANSFAC-curated](https://maayanlab.cloud/Harmonizome/dataset/TRANSFAC+Curated+Transcription+Factor+Targets)
