@@ -42,7 +42,8 @@ def saveNetflux(grn, savefile, inputs=None, suffix=None):
     species["Ymax"] = 1
     species["tau"] = 0.1
     species["type"] = "mRNA"
-    species = species[["module", "ID", "name", "Yinit", "Ymax", "tau", "type"]]
+    species["gene name"] = speciesnames
+    species = species[["module", "ID", "name", "Yinit", "Ymax", "tau", "type", "gene name"]]
     
     # export to xlsx
     with pd.ExcelWriter(savefile) as writer:
