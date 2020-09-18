@@ -298,4 +298,4 @@ def refineGRN(grn,
                             paths_found_bothsearch_imp["path"])
     print(grn_final.shape)
 
-    return grn_final
+    return grn_final, inputs

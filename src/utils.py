@@ -4,9 +4,20 @@ Utility functions used in inference: saveNetflux
 
 import pandas as pd
 
-def saveNetflux(grn, savefile, composite=False, suffix=None): 
+def saveNetflux(grn, savefile, inputs=None, suffix=None): 
     # format reactions df
     grn = grn.reset_index()
+
+    if inputs:
+        inputrxns = pd.DataFrame(data=" => " + inputs, columns=["Rule"])
+        inputrxns["module"] = "input"
+        inputrxns["ID"] = "i"+str(inputrxns.index)
+        inputrxns["Weight"] = 1
+        inputrxns["n"] = 1.4
+        inputrxns["EC50"] = 0.6
+        inputrxns["source"] = "GRN-inputs"
+        inputrxns["notes"] = ""
+
     grn["module"] = "txn"
     grn["ID"] = "r" + str(grn.index)
     grn["Rule"] = grn["TF"] + " => " + grn["target"]
@@ -17,6 +28,9 @@ def saveNetflux(grn, savefile, composite=False, suffix=None):
     grn["notes"] = ""
     reactions = grn[["module", "ID", "Rule", "Weight", 
                     "n", "EC50", "source", "notes"]]
+    
+    if inputs:
+        reactions = pd.concat([inputrxns, reactions], axis=0)
     
     # create species df from unique TF/target nodes
     speciesnames = pd.concat([grn["TF"], grn["target"]], 
