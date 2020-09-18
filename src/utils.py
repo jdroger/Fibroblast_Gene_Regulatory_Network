@@ -4,7 +4,7 @@ Utility functions used in inference: saveNetflux
 
 import pandas as pd
 
-def saveNetflux(grn, savefile, inputs=None, suffix=None): 
+def saveNetflux(grn, savedir, inputs=None, fold=None, suffix=None): 
     # format reactions df
     grn = grn.reset_index()
 
@@ -46,6 +46,16 @@ def saveNetflux(grn, savefile, inputs=None, suffix=None):
     species = species[["module", "ID", "name", "Yinit", "Ymax", "tau", "type", "gene name"]]
     
     # export to xlsx
+    if suffix is not None:
+        ext = "_" + suffix + ".xlsx"
+    else:
+        ext = ".xlsx"
+    
+    if fold is not None:
+        savefile = savedir + "GRN_Netflux_fold" + str(fold) + ext
+    else:
+        savefile = savedir + "GRN_Netflux" + ext
+
     with pd.ExcelWriter(savefile) as writer:
         species.to_excel(writer, sheet_name='species', index=False, startrow=1)
         reactions.to_excel(writer, sheet_name='reactions', index=False, startrow=1)
