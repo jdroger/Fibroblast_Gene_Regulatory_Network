@@ -16,6 +16,7 @@ from arboreto.algo import grnboost2
 
 from src.GRNrefinement import refineGRN
 import src.GRNvalidation as gv
+from src.utils import saveNetflux
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -82,16 +83,17 @@ def saveGRN(grn, savedir, fold=None,
                 for test in testingset[fold]:
                     output.write(test + "\n")
     else:
-        filename_grn = "GRN_single"+ext_csv
+        filename_grn = "GRN_single" + ext_csv
     grn.to_csv(savedir+filename_grn)
     return
 
 
 
 # runtime scripts
-def inferGRN(filename, 
-            libpath, libname, lib_both=True,
-            savedir=None, suffix=None, seed=None):
+def inferGRN(filename, libname, client, 
+            libpath="data/", lib_both=True,
+            savedir="data/networks/", suffix=None, saveasNetflux=False,
+            seed=None):
     """
     Top-level script for inferring gene regulatory network
     from a given dataset using the Arboreto GRNboost2 algorithm.
@@ -102,6 +104,9 @@ def inferGRN(filename,
     :lib_both:  (optional) Boolean operator determining use of additional
                 library (TRANSFACpredicted) for wider TF coverage
     :savedir:   (optional) path to directory for saving final CSV.
+    :saveasNetflux: (optional) formats and saves GRN to Excel spreadsheet
+                for import into Netflux MATLAB package. requires that
+                'savedir' be specified as well.
     :seed:      (optional) integer for inference algorithm seed
     """
 
@@ -114,8 +119,8 @@ def inferGRN(filename,
 
 
     # setup Dask cluster
-    client = Client(LocalCluster())
-    print(client.dashboard_link)
+    # client = Client(LocalCluster())
+    # print(client.dashboard_link)
     
 
 
@@ -125,18 +130,22 @@ def inferGRN(filename,
                     tf_names=tf_names,
                     client_or_address=client,
                     seed=seed)
-    grn_refined = refineGRN(grn, libname, dir_path=libpath)
+    grn_refined, inputs = refineGRN(grn, libname, dir_path=libpath)
 
     if savedir is not None:
         saveGRN(grn_refined, savedir, suffix=suffix)
+    
+    if saveasNetflux:
+        saveNetflux(grn_refined, savedir, inputs=inputs, suffix=suffix)
 
     client.shutdown()
     return grn_refined
 
 
-def crossvalidateGRN(filename, 
-                    libpath, libname, k, lib_both=True,
-                    savedir=None, suffix=None, seed=None):
+def crossvalidateGRN(filename, libname, k, client, 
+                    libpath="data/", lib_both=True,
+                    savedir="data/networks/", suffix=None, saveasNetflux=False, 
+                    seed=None):
     """
     Top-level script for k-fold cross validation of gene regulatory 
     network inference using the Arboreto GRNboost2 algorithm.
@@ -144,11 +153,14 @@ def crossvalidateGRN(filename,
     :libpath:   path to directory containing sub-folders for TF-target
                 libraries.
     :libname:   string of TF-target library used for inference.
-    :k:         integer specifying number of folds for CV
+    :k:         integer specifying number of folds for CV.
     :lib_both:  (optional) Boolean operator determining use of additional
-                library (TRANSFACpredicted) for wider TF coverage
+                library (TRANSFACpredicted) for wider TF coverage.
     :savedir:   (optional) path to directory for saving final CSV.
-    :seed:      (optional) integer for inference algorithm seed
+    :saveasNetflux: (optional) formats and saves GRN to Excel spreadsheet
+                for import into Netflux MATLAB package. requires that
+                'savedir' be specified as well.
+    :seed:      (optional) integer for inference algorithm seed.
     """
 
     # import cpm + library data
@@ -162,8 +174,8 @@ def crossvalidateGRN(filename,
     training, testing = gv.assignFolds(folds)
 
     # setup Dask cluster
-    client = Client(LocalCluster())
-    print(client.dashboard_link)
+    # client = Client(LocalCluster())
+    # print(client.dashboard_link)
 
     # infer + refine GRN for each fold
     fold = 0
@@ -176,12 +188,16 @@ def crossvalidateGRN(filename,
                         tf_names=tf_names,
                         client_or_address=client,
                         seed=seed)
-        grn_refined = refineGRN(grn, libname, dir_path=libpath)
+        grn_refined, inputs = refineGRN(grn, libname, dir_path=libpath)
 
         if savedir is not None:
             saveGRN(grn_refined, savedir, fold=fold, suffix=suffix, 
                     trainingset=training, testingset=testing)
         
+        if saveasNetflux:
+            saveNetflux(grn_refined, savedir, inputs=inputs, fold=fold, 
+                        suffix=suffix)
+
         # store all refined GRNs
         grn_refined["fold"] = fold
         if fold == 0:
